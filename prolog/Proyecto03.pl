@@ -62,31 +62,28 @@ escribeLineas(Kak) :-
 imprimirKakuro :- kakuro(X), 
                   escribeLineas(X).
 
-kakuroInicial([x,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0,
-               0,0,0,0,0,0,0,0,0]).
+kakuroInicial([x,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n,
+               n,n,n,n,n,n,n,n,n]).
 
 colaLista([_|T], I, N, R) :- I == N, R = T, !.
 colaLista([_|T], I, N, R) :- I2 is I+1, colaLista(T, I2, N, R).
 
 %modificarElemento(K, X, Y, R, I, 10, S) :- I1 is I+1, modificarElemento(K, X, Y, R, I1, 1, S), !.
-modificarElemento(_, _, _, R, 10, _, _) :- R = [], write('Me activé\n'), !.
-modificarElemento(K, X, Y, R, I, J, S) :- X == I, J == Y, I1 = I+1,
-                                          modificarElemento(K, X, Y, R1, I1, 1, S), write('4'),
-                                          row(K, I, L2), 
-                                          write('Linea: '), write(L2), nl,
+modificarElemento(_, _, _, R, 10, _, _) :- R = [], !.
+modificarElemento(K, X, Y, R, I, J, S) :- X == I, J == Y, I1 is I+1,
+                                          modificarElemento(K, X, Y, R1, I1, 1, S),
+                                          row(K, I, L2),
                                           colaLista(L2, 1, J, L3),
-                                          write('Cola: '), write(L3), nl,
                                           append([S|L3], R1, R), !.
 
 modificarElemento(K, X, Y, R, I, J, S) :- X == I,  J1 is J+1,
-                                          write(J), write(' '),
                                           row(K, I, L1), 
                                           nth1(J, L1, E), 
                                           modificarElemento(K, X, Y, R1, I, J1, S), 
@@ -96,13 +93,38 @@ modificarElemento(K, X, Y, R, I, J, S) :- I1 is I+1, row(K, I, L),
                                           modificarElemento(K, X, Y, R1, I1, J, S),
                                           append(L, R1, R).
 
-modEl(X, Y, S) :- kakuro(K), modificarElemento(K, X, Y, R, 1, 1, S), escribeLineas(R).
+modEl(X, Y, S, R, K) :- modificarElemento(K, X, Y, R, 1, 1, S).
 
-generarLineas(K, 1) :- row(K, 1, L),
-                 
+editarColumnas(X, _, _, _, K, R) :- X > 9, R is K.
+editarColumnas(X, Y, I, C, K, R) :- I == C, modEl(X, Y, 0, R, K).
+editarColumnas(X, Y, I, C, K, R) :- X1 is X+1, I1 is I+1,
+                                    editarColumnas(X1, Y, I1, C, K, R1),
+                                    modEl(X, Y, 0, R, R1).
 
-generarKakuro :- kakuroInicial(K), 
-                 generarLineas(K, 1).
+%generarLineas(K, 1) :- row(K, 1, L).
+generarCasillas(Num, X) :- Num < 10, X is 2, !.
+generarCasillas(Num, X) :- Num > 17, random(3, 5, X), !.
+generarCasillas(Num, X) :- Num > 23, random(4, 6, X), !.
+generarCasillas(_, X) :- random(2, 4, X).
+
+editarTablero(1, Y, 1, K, R) :- random(4, 28, NumR),
+                                generarCasillas(NumR, NumC),
+                                E = NumR/x,
+                                modEl(1, Y, E, R1, K),
+                                editarColumnas(2, Y, 1, NumC, R1, R).
+
+editarTablero(1, Y, _, K, R) :- modEl(1, Y, x, R, K).
+
+generaLinea(1, 10, R, K) :- R = K.
+generaLinea(1, Y, R, K) :- random(1, 4, Num),
+                           Y1 is Y+1,
+                           generaLinea(1, Y1, R1, K),
+                           editarTablero(1, Y, Num, R1, R).
+                           
+
+generarKakuro :- kakuroInicial(K), generaLinea(1, 2, R, K), escribeLineas(R).
+
 verLinea(Num) :- kakuro(X), row(X, Num, Row), write(Row).
 verColumna(Num) :- kakuro(X), column(X, Num, Column), write(Column).
 
+prueba :- kakuroInicial(K), generaLinea(1, 10, R, K), escribeLineas(R).
