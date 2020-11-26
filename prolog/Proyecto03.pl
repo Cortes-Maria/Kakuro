@@ -95,11 +95,17 @@ modificarElemento(K, X, Y, R, I, J, S) :- I1 is I+1, row(K, I, L),
 
 modEl(X, Y, S, R, K) :- modificarElemento(K, X, Y, R, 1, 1, S).
 
-editarColumnas(X, _, _, _, K, R) :- X > 9, R is K.
+editarColumnas(X, _, _, _, K, R) :- X > 9, R = K, !.
 editarColumnas(X, Y, I, C, K, R) :- I == C, modEl(X, Y, 0, R, K).
 editarColumnas(X, Y, I, C, K, R) :- X1 is X+1, I1 is I+1,
                                     editarColumnas(X1, Y, I1, C, K, R1),
                                     modEl(X, Y, 0, R, R1).
+
+editarFilas(_, Y, _, _, K, R, _) :- Y > 9, R = K, !.
+editarFilas(X, Y, I, C, K, R, Y2) :- I == C, modEl(X, Y, 0, R, K), Y2 is Y+1.
+editarFilas(X, Y, I, C, K, R, Y2) :- Y1 is Y+1, I1 is I+1,
+                                     editarFilas(X, Y1, I1, C, K, R1, Y2),
+                                     modEl(X, Y, 0, R, R1).
 
 %generarLineas(K, 1) :- row(K, 1, L).
 generarCasillas(Num, X) :- Num < 10, X is 2, !.
@@ -107,24 +113,61 @@ generarCasillas(Num, X) :- Num > 17, random(3, 5, X), !.
 generarCasillas(Num, X) :- Num > 23, random(4, 6, X), !.
 generarCasillas(_, X) :- random(2, 4, X).
 
+%primera linea con numero
 editarTablero(1, Y, 1, K, R) :- random(4, 28, NumR),
                                 generarCasillas(NumR, NumC),
                                 E = NumR/x,
                                 modEl(1, Y, E, R1, K),
                                 editarColumnas(2, Y, 1, NumC, R1, R).
-
+%primera linea sin numero
 editarTablero(1, Y, _, K, R) :- modEl(1, Y, x, R, K).
 
-generaLinea(1, 10, R, K) :- R = K.
+editarTablero(X, Y, _, K, R, Y1) :- row(K, X, L1),
+                                   nth1(Y, L1, E),
+                                   E == 0, Y1 is Y+1, R = K, !.
+
+%cualquier linea, numero abajo
+editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
+                                    generarCasillas(NumR, NumC),
+                                    E = NumR/x,
+                                    modEl(X, Y, E, R1, K),
+                                    X1 is X+1,
+                                    editarColumnas(X1, Y, 1, NumC, R1, R),
+                                    Y1 is Y+1.
+
+%cualquier linea, numero derecha
+editarTablero(X, Y, 2, K, R, Y1) :- random(4, 28, NumR),
+                                    generarCasillas(NumR, NumC),
+                                    E = x/NumR,
+                                    modEl(X, Y, E, R1, K),
+                                    Y2 is Y+1,
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1).
+
+%cualquier linea, no numero
+editarTablero(X, Y, _, K, R, Y1) :- modEl(X, Y, x, R, K), Y1 is Y+1.
+
+%primera linea
+generaLinea(1, 10, R, K) :- R = K, !.
 generaLinea(1, Y, R, K) :- random(1, 4, Num),
                            Y1 is Y+1,
                            generaLinea(1, Y1, R1, K),
                            editarTablero(1, Y, Num, R1, R).
-                           
+%cualquier linea
+generaLinea(_, 10, R, K) :- R = K.
+generaLinea(X, Y, R, K) :- random(1, 7, Num), 
+                           editarTablero(X, Y, Num, K, R1, Y1),
+                           generaLinea(X, Y1, R, R1).
 
-generarKakuro :- kakuroInicial(K), generaLinea(1, 2, R, K), escribeLineas(R).
 
-verLinea(Num) :- kakuro(X), row(X, Num, Row), write(Row).
-verColumna(Num) :- kakuro(X), column(X, Num, Column), write(Column).
-
-prueba :- kakuroInicial(K), generaLinea(1, 10, R, K), escribeLineas(R).
+%llamar a esta funcion para generar
+generarKakuro :- kakuroInicial(K), 
+                 generaLinea(1, 2, R, K), 
+                 generaLinea(2, 1, R1, R), 
+                 generaLinea(3, 1, R2, R1),
+                 generaLinea(4, 1, R3, R2),
+                 generaLinea(5, 1, R4, R3),
+                 generaLinea(6, 1, R5, R4),
+                 generaLinea(7, 1, R6, R5),
+                 generaLinea(8, 1, R7, R6),
+                 generaLinea(9, 1, R8, R7),
+                 escribeLineas(R8).
