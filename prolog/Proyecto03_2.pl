@@ -12,6 +12,18 @@ row(Sudoku, N, Row) :-
     N9 is N0*9+9, nth1(N9, Sudoku, X9),
     Row = [X1, X2, X3, X4, X5, X6, X7, X8, X9].
 
+rowStr(Sudoku, N, Row) :-
+    N0 is N-1,
+    N1 is N0*9+1, nth1(N1, Sudoku, X1),
+    N2 is N0*9+2, nth1(N2, Sudoku, X2),
+    N3 is N0*9+3, nth1(N3, Sudoku, X3),
+    N4 is N0*9+4, nth1(N4, Sudoku, X4),
+    N5 is N0*9+5, nth1(N5, Sudoku, X5),
+    N6 is N0*9+6, nth1(N6, Sudoku, X6),
+    N7 is N0*9+7, nth1(N7, Sudoku, X7),
+    N8 is N0*9+8, nth1(N8, Sudoku, X8),
+    N9 is N0*9+9, nth1(N9, Sudoku, X9),
+    Row = (X1,X2,X3,X4,X5,X6,X7,X8,X9).
 
 column(Sudoku, N, Column) :-
     N1 is 0*9+N, nth1(N1, Sudoku, X1),
@@ -35,15 +47,16 @@ sodoku( [4,x,x,x,6,x,9,1,x,
          x,x,x,x,3,x,4,x,5,
          x,4,x,9,x,x,6,x,x]).
 
-kakuro([x    , 17/x  , 16/x  , x     , x     , 12/x , 6/x  , x    , x    ,
-        x/16 , 9     , 7     , 23/x  , x/4   , 3    , 1    , 26/x , 23/x ,
-        x/23 , 8     , 9     , 6     , 29/29 , 9    , 5    , 7    , 8    ,
-        x    , x     , 18/17 , 9     , 8     , 23/x , x/17 , 8    , 9    ,
-        x    , 27/27 , 3     , 8     , 7     , 9    , 23/8 , 2    , 6    ,
-        x/9  , 7     , 2     , x/24  , 1     , 6    , 8    , 9    , x    ,
-        x/4  , 3     , 1     , 8/21  , 4     , 8    , 9    , 17/x , 16/x ,
-        x/22 , 8     , 4     , 1     , 9     , x/23 , 6    , 8    , 9    ,
-        x/24 , 9     , 8     , 7     , x     , x    , x/16 , 9    , 7     ]).
+kakuro([x    , (17,x)  , (16,x)  , x     , x     , (12,x) , (6,x)  , x    , x    ,
+        (x,16) , 9     , 7     , (23,x)  , (x,4)   , 3    , 1    , (26,x) , (23,x) ,
+        (x,23) , 8     , 9     , 6     , (29,29) , 9    , 5    , 7    , 8    ,
+        x    , x     , (18,17) , 9     , 8     , (23,x) , (x,17) , 8    , 9    ,
+        x    , (27,27) , 3     , 8     , 7     , 9    , (23,8) , 2    , 6    ,
+        (x,9)  , 7     , 2     , (x,24)  , 1     , 6    , 8    , 9    , x    ,
+        (x,4)  , 3     , 1     , (8,21)  , 4     , 8    , 9    , (17,x) , (16,x) ,
+        (x,22) , 8     , 4     , 1     , 9     , (x,23) , 6    , 8    , 9    ,
+        (x,24) , 9     , 8     , 7     , x     , x    , (x,16) , 9    , 7     ]).
+
 
 imprimeLinea([H|[]]) :- write(H), nl, !.
 imprimeLinea([H|T]) :- write(H), write('\t '), imprimeLinea(T).
@@ -116,7 +129,7 @@ generarCasillas(_, X) :- random(2, 4, X).
 %primera linea con numero
 editarTablero(1, Y, 1, K, R) :- random(4, 28, NumR),
                                 generarCasillas(NumR, NumC),
-                                E = NumR/x,
+                                E = (NumR,x),
                                 modEl(1, Y, E, R1, K),
                                 editarColumnas(2, Y, 1, NumC, R1, R).
 %primera linea sin numero
@@ -133,16 +146,13 @@ editarTablero(X, Y, _, K, R, Y1) :- row(K, X, L1),
 editarTablero(X, Y, 2, K, R, Y1) :- Y>7, modEl(X, Y, x, R, K),
                                     Y1 is Y+1, !.
 
-%cuando se esta en los ultimos 4 campos
-editarTablero(X, Y, 3, K, R, Y1) :- Y>7, X>7, modEl(X, Y, x, R, K),
-                                    Y1 is Y+1, !.
 
 %si se esta en la primera columna no deberia haber numeros abajo
 editarTablero(X, 1, 1, K, R, Y1) :- modEl(X, 1, x, R, K),
                                     Y1 is 2, !.
 editarTablero(X, 1, 3, K, R, Y1) :- random(4, 28, NumR),
                                     generarCasillas(NumR, NumC),
-                                    E = x/NumR,
+                                    E = (x,NumR),
                                     modEl(X, 1, E, R1, K),
                                     Y2 is 2,
                                     editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
@@ -165,7 +175,7 @@ editarTablero(X, Y, 1, K, R, Y1) :- X>7, modEl(X, Y, x, R, K),
                                     Y1 is 10, !.*/
 editarTablero(X, Y, 3, K, R, Y1) :- Y>7, random(4, 28, NumR),
                                     generarCasillas(NumR, NumC),
-                                    E = NumR/x,
+                                    E = (NumR,x),
                                     modEl(X, Y, E, R1, K),
                                     X1 is X+1,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
@@ -180,7 +190,7 @@ editarTablero(X, Y, 3, K, R, Y1) :- Y>7, random(4, 28, NumR),
                                     editarFilas(9, Y2, 1, NumC, R1, R, Y1), !.*/
 editarTablero(X, Y, 3, K, R, Y1) :- X>7, random(4, 28, NumR),
                                     generarCasillas(NumR, NumC),
-                                    E = x/NumR,
+                                    E = (x,NumR),
                                     modEl(X, Y, E, R1, K),
                                     Y2 is Y+1,
                                     editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
@@ -188,7 +198,7 @@ editarTablero(X, Y, 3, K, R, Y1) :- X>7, random(4, 28, NumR),
 %cualquier linea, numero abajo
 editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
                                     generarCasillas(NumR, NumC),
-                                    E = NumR/x,
+                                    E = (NumR,x),
                                     modEl(X, Y, E, R1, K),
                                     X1 is X+1,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
@@ -197,7 +207,7 @@ editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
 %cualquier linea, numero derecha
 editarTablero(X, Y, 2, K, R, Y1) :- random(4, 28, NumR),
                                     generarCasillas(NumR, NumC),
-                                    E = x/NumR,
+                                    E = (x,NumR),
                                     modEl(X, Y, E, R1, K),
                                     Y2 is Y+1,
                                     editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
@@ -207,7 +217,7 @@ editarTablero(X, Y, 3, K, R, Y1) :- random(4, 28, NumR1),
                                     random(4, 28, NumR2),
                                     generarCasillas(NumR1, NumC1),
                                     generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
+                                    E = (NumR1,NumR2),
                                     modEl(X, Y, E, R1, K),
                                     Y2 is Y+1,
                                     X1 is X+1,
@@ -234,7 +244,7 @@ generaLinea(X, Y, R, K) :- random(1, 7, Num),
 
 
 %llamar a esta funcion para generar
-generarKakuro :- kakuroInicial(K), 
+generarKakuro(X) :- kakuroInicial(K), 
                  generaLinea(1, 2, R, K), 
                  generaLinea(2, 1, R1, R), 
                  generaLinea(3, 1, R2, R1),
@@ -244,4 +254,13 @@ generarKakuro :- kakuroInicial(K),
                  generaLinea(7, 1, R6, R5),
                  generaLinea(8, 1, R7, R6),
                  generaLinea(9, 1, R8, R7),
-                 escribeLineas(R8).
+                 escribeLineas(R8), X = R8.
+
+kakuroAString(K, 9, R) :- rowStr(K, 9, R).
+kakuroAString(K, I, R) :- I1 is I+1,
+                          kakuroAString(K, I1, R1),
+                          rowStr(K, I, R2),
+                          R = R2/R1.
+
+kak(X) :- kakuro(K), kakuroAString(K, 1, X), write(X).
+kak2(X) :- kakuro(K), rowStr(K, 1, X).
