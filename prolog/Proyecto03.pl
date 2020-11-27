@@ -126,6 +126,28 @@ editarTablero(X, Y, _, K, R, Y1) :- row(K, X, L1),
                                    nth1(Y, L1, E),
                                    E == 0, Y1 is Y+1, R = K, !.
 
+%si se esta en la ultima columna no deberia haber numeros a la derecha
+editarTablero(X, 9, 2, K, R, Y1) :- modEl(X, 9, x, R, K),
+                                    Y1 is 10, !.
+%si se esta en la ultima fila no deberian haber numeros abajo
+editarTablero(9, Y, 1, K, R, Y1) :- modEl(9, Y, x, R, K),
+                                    Y1 is Y+1, !.
+%dos numeros ultima columna
+editarTablero(X, 9, 3, K, R, Y1) :- random(4, 28, NumR),
+                                    generarCasillas(NumR, NumC),
+                                    E = NumR/x,
+                                    modEl(X, 9, E, R1, K),
+                                    X1 is X+1,
+                                    editarColumnas(X1, 9, 1, NumC, R1, R),
+                                    Y1 is 10, !.
+%dos numeros ultima fila
+editarTablero(9, Y, 3, K, R, Y1) :- random(4, 28, NumR),
+                                    generarCasillas(NumR, NumC),
+                                    E = x/NumR,
+                                    modEl(9, Y, E, R1, K),
+                                    Y2 is Y+1,
+                                    editarFilas(9, Y2, 1, NumC, R1, R, Y1), !.
+
 %cualquier linea, numero abajo
 editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
                                     generarCasillas(NumR, NumC),
@@ -133,7 +155,7 @@ editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
                                     modEl(X, Y, E, R1, K),
                                     X1 is X+1,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1.
+                                    Y1 is Y+1, !.
 
 %cualquier linea, numero derecha
 editarTablero(X, Y, 2, K, R, Y1) :- random(4, 28, NumR),
@@ -141,7 +163,22 @@ editarTablero(X, Y, 2, K, R, Y1) :- random(4, 28, NumR),
                                     E = x/NumR,
                                     modEl(X, Y, E, R1, K),
                                     Y2 is Y+1,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1).
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+
+%cualquier linea, numero arriba y abajo
+editarTablero(X, Y, 3, K, R, Y1) :- random(4, 28, NumR1),
+                                    random(4, 28, NumR2),
+                                    generarCasillas(NumR1, NumC1),
+                                    generarCasillas(NumR2, NumC2),
+                                    E = NumR1/NumR2,
+                                    modEl(X, Y, E, R1, K),
+                                    Y2 is Y+1,
+                                    X1 is X+1,
+                                    editarColumnas(X1, Y, 1, NumC1, R1, R2),
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1).
+                                    
+
+
 
 %cualquier linea, no numero
 editarTablero(X, Y, _, K, R, Y1) :- modEl(X, Y, x, R, K), Y1 is Y+1.
