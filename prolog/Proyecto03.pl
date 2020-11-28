@@ -109,8 +109,8 @@ editarFilas(X, Y, I, C, K, R, Y2) :- Y1 is Y+1, I1 is I+1,
 
 %generarLineas(K, 1) :- row(K, 1, L).
 generarCasillas(Num, X) :- Num < 10, X is 2, !.
-generarCasillas(Num, X) :- Num > 17, random(3, 5, X), !.
 generarCasillas(Num, X) :- Num > 23, random(4, 6, X), !.
+generarCasillas(Num, X) :- Num > 17, random(3, 5, X), !.
 generarCasillas(_, X) :- random(2, 4, X).
 
 %primera linea con numero
@@ -118,49 +118,49 @@ editarTablero(1, Y, 1, K, R) :- random(4, 28, NumR),
                                 generarCasillas(NumR, NumC),
                                 E = NumR/x,
                                 modEl(1, Y, E, R1, K),
-                                editarColumnas(2, Y, 1, NumC, R1, R).
+                                editarColumnas(2, Y, 1, NumC, R1, R), write('1\n').
 %primera linea sin numero
 editarTablero(1, Y, _, K, R) :- modEl(1, Y, x, R, K).
 
 %si la casilla tiene un 0 no se pondria nada
 editarTablero(X, Y, _, K, R, Y1) :- row(K, X, L1),
                                    nth1(Y, L1, E),
-                                   E == 0, Y1 is Y+1, R = K, !.
+                                   E == 0, Y1 is Y+1, R = K, write('2\n'), !.
 
 %si se esta en la primera columna no deberia haber numeros abajo
 editarTablero(X, 1, 1, K, R, Y1) :- modEl(X, 1, x, R, K),
-                                    Y1 is 2, !.
+                                    Y1 is 2, write('3\n'), !.
 editarTablero(X, 1, 3, K, R, Y1) :- random(4, 28, NumR),
                                     generarCasillas(NumR, NumC),
                                     E = x/NumR,
                                     modEl(X, 1, E, R1, K),
                                     Y2 is 2,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('4\n'), !.
 
 %cuando se esta en los ultimos 4 campos se insertaria una x
 editarTablero(X, Y, 3, K, R, Y1) :- Y>7, X>7, modEl(X, Y, x, R, K),
-                                    Y1 is Y+1, !.
+                                    Y1 is Y+1, write('5\n'), !.
 
 %----------------------------------------------------------
 %cuando se esta en la columna 6 y numero derecha, este deberia ser pequeno
-editarTablero(X, 6, 2, K, R, Y1) :- NumR is 17,
+editarTablero(X, 6, 2, K, R, Y1) :- random(4, 20, NumR),
                                     generarCasillas(NumR, NumC),
                                     E = x/NumR,
                                     modEl(X, 6, E, R1, K),
                                     Y2 is 7,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('6\n'), !.
 
 %columna 6 y fila  mayor a 7 numeros pequenos derecha
-editarTablero(X, 6, 3, K, R, Y1) :- X>7, NumR is 17,
+editarTablero(X, 6, 3, K, R, Y1) :- X>7, random(4, 20, NumR),
                                     generarCasillas(NumR, NumC),
                                     E = x/NumR,
                                     modEl(X, 6, E, R1, K),
                                     Y2 is 7,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('7\n'), !.
 %random(4, 20, NumR)
 %columna 6, fila 6
 editarTablero(X, 6, 3, K, R, Y1) :- X==6, random(4, 20, NumR1),
-                                    NumR2 is 17,
+                                    random(4, 20, NumR2),
                                     generarCasillas(NumR1, NumC1),
                                     generarCasillas(NumR2, NumC2),
                                     E = NumR1/NumR2,
@@ -168,10 +168,10 @@ editarTablero(X, 6, 3, K, R, Y1) :- X==6, random(4, 20, NumR1),
                                     X1 is X+1,
                                     Y2 is 7,
                                     editarColumnas(X1, 6, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('8\n'), !.
 %columna 6, fila 7
 editarTablero(X, 6, 3, K, R, Y1) :- X==7, random(4, 14, NumR1),
-                                    NumR2 is 17,
+                                    random(4, 20, NumR2),
                                     generarCasillas(NumR1, NumC1),
                                     generarCasillas(NumR2, NumC2),
                                     E = NumR1/NumR2,
@@ -179,11 +179,11 @@ editarTablero(X, 6, 3, K, R, Y1) :- X==7, random(4, 14, NumR1),
                                     X1 is X+1,
                                     Y2 is 7,
                                     editarColumnas(X1, 6, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('9\n'), !.
 
 %cuando se esta en la fila 6 y numero abajo, este deberia ser pequeno
 editarTablero(X, 6, 3, K, R, Y1) :- random(4, 28, NumR1),
-                                    NumR2 is 17,
+                                    random(4, 20, NumR2),
                                     generarCasillas(NumR1, NumC1),
                                     generarCasillas(NumR2, NumC2),
                                     E = NumR1/NumR2,
@@ -191,7 +191,7 @@ editarTablero(X, 6, 3, K, R, Y1) :- random(4, 28, NumR1),
                                     X1 is X+1,
                                     Y2 is 7,
                                     editarColumnas(X1, 6, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('10\n'), !.
 
 
 
@@ -199,23 +199,23 @@ editarTablero(X, 6, 3, K, R, Y1) :- random(4, 28, NumR1),
 
 
 
-%cuando se esta en la fila 7 y numero abajo, este deberia ser pequeno
+%cuando se esta en la columna 7 y numero derecha, este deberia ser pequeno
 editarTablero(X, 7, 2, K, R, Y1) :- random(4, 14, NumR),
                                     generarCasillas(NumR, NumC),
                                     E = x/NumR,
                                     modEl(X, 7, E, R1, K),
                                     Y2 is 8,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('11\n'), !.
 
-%fila 7 columna mayor a 7 numeros pequenos abajo y x derecha
+%columna 7 fila mayor a 7 
 editarTablero(X, 7, 3, K, R, Y1) :- X>7, random(4, 14, NumR),
                                     generarCasillas(NumR, NumC),
                                     E = x/NumR,
                                     modEl(X, 7, E, R1, K),
                                     Y2 is 8,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('12\n'), !.
 
-%columna 6, fila 6
+%columna 7, fila 6
 editarTablero(X, 7, 3, K, R, Y1) :- X==6, random(4, 20, NumR1),
                                     random(4, 14, NumR2),
                                     generarCasillas(NumR1, NumC1),
@@ -225,8 +225,8 @@ editarTablero(X, 7, 3, K, R, Y1) :- X==6, random(4, 20, NumR1),
                                     X1 is X+1,
                                     Y2 is 8,
                                     editarColumnas(X1, 7, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), !.
-%columna 6, fila 7
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('13\n'), !.
+%columna 7, fila 7
 editarTablero(X, 7, 3, K, R, Y1) :- X==7, random(4, 14, NumR1),
                                     random(4, 14, NumR2),
                                     generarCasillas(NumR1, NumC1),
@@ -236,12 +236,12 @@ editarTablero(X, 7, 3, K, R, Y1) :- X==7, random(4, 14, NumR1),
                                     X1 is X+1,
                                     Y2 is 8,
                                     editarColumnas(X1, 7, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('14\n'), !.
 
 
-%cuando se esta en la fila 7 y numero abajo, este deberia ser pequeno
-editarTablero(X, 7, 3, K, R, Y1) :- random(4, 14, NumR1),
-                                    random(4, 28, NumR2),
+%cuando se esta en la columna 7 y numero derecha, este deberia ser pequeno
+editarTablero(X, 7, 3, K, R, Y1) :- random(4, 28, NumR1),
+                                    random(4, 14, NumR2),
                                     generarCasillas(NumR1, NumC1),
                                     generarCasillas(NumR2, NumC2),
                                     E = NumR1/NumR2,
@@ -249,7 +249,7 @@ editarTablero(X, 7, 3, K, R, Y1) :- random(4, 14, NumR1),
                                     X1 is X+1,
                                     Y2 is 8,
                                     editarColumnas(X1, 7, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('15\n'), !.
 
 %--------------------------------------------------------------------
 
@@ -261,7 +261,7 @@ editarTablero(6, Y, 1, K, R, Y1) :- random(4, 20, NumR),
                                     modEl(6, Y, E, R1, K),
                                     X1 is 7,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, !.
+                                    Y1 is Y+1, write('16\n'), !.
 
 %fila 7 columna mayor a 6 numeros pequenos abajo y x derecha
 editarTablero(6, Y, 3, K, R, Y1) :- Y>7, random(4, 20, NumR),
@@ -270,7 +270,7 @@ editarTablero(6, Y, 3, K, R, Y1) :- Y>7, random(4, 20, NumR),
                                     modEl(6, Y, E, R1, K),
                                     X1 is 7,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1.
+                                    Y1 is Y+1, write('17\n').
 
 %cuando se esta en la fila 6 y numero abajo, este deberia ser pequeno
 editarTablero(6, Y, 3, K, R, Y1) :- random(4, 20, NumR1),
@@ -282,7 +282,7 @@ editarTablero(6, Y, 3, K, R, Y1) :- random(4, 20, NumR1),
                                     X1 is 7,
                                     Y2 is Y+1,
                                     editarColumnas(X1, Y, 1, NumC1, R1, R2),
-                                    editarFilas(6, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(6, Y2, 1, NumC2, R2, R, Y1), write('18\n'), !.
 
 
 %cuando se esta en la fila 7 y numero abajo, este deberia ser pequeno
@@ -292,7 +292,7 @@ editarTablero(7, Y, 1, K, R, Y1) :- random(4, 14, NumR),
                                     modEl(7, Y, E, R1, K),
                                     X1 is 8,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, !.
+                                    Y1 is Y+1, write('19\n'), !.
 
 %fila 7 columna mayor a 7 numeros pequenos abajo y x derecha
 editarTablero(7, Y, 3, K, R, Y1) :- Y>7, random(4, 14, NumR),
@@ -301,7 +301,7 @@ editarTablero(7, Y, 3, K, R, Y1) :- Y>7, random(4, 14, NumR),
                                     modEl(7, Y, E, R1, K),
                                     X1 is 8,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1.
+                                    Y1 is Y+1, write('20\n').
 
 %cuando se esta en la fila 7 y numero abajo, este deberia ser pequeno
 editarTablero(7, Y, 3, K, R, Y1) :- random(4, 14, NumR1),
@@ -313,14 +313,14 @@ editarTablero(7, Y, 3, K, R, Y1) :- random(4, 14, NumR1),
                                     X1 is 8,
                                     Y2 is Y+1,
                                     editarColumnas(X1, Y, 1, NumC1, R1, R2),
-                                    editarFilas(7, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(7, Y2, 1, NumC2, R2, R, Y1), write('21\n'), !.
 
 
 %si se esta en las ultimas 2 columnas no deberia haber numeros a la derecha
 /*editarTablero(X, 9, 2, K, R, Y1) :- modEl(X, 9, x, R, K),
                                     Y1 is 10, !.*/
 editarTablero(X, Y, 2, K, R, Y1) :- Y>7, modEl(X, Y, x, R, K),
-                                    Y1 is Y+1, !.
+                                    Y1 is Y+1, write('22\n'), !.
 
 
 
@@ -330,7 +330,7 @@ editarTablero(X, Y, 2, K, R, Y1) :- Y>7, modEl(X, Y, x, R, K),
 /*editarTablero(9, Y, 1, K, R, Y1) :- modEl(9, Y, x, R, K),
                                     Y1 is Y+1, !.*/
 editarTablero(X, Y, 1, K, R, Y1) :- X>7, modEl(X, Y, x, R, K),
-                                    Y1 is Y+1, !.
+                                    Y1 is Y+1, write('23\n'), !.
 
 
 %dos numeros ultimas dos columnas solo deberia haber abajo
@@ -356,7 +356,7 @@ editarTablero(X, Y, 3, K, R, Y1) :- Y>7, random(4, 28, NumR),
                                     modEl(X, Y, E, R1, K),
                                     X1 is X+1,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, !.
+                                    Y1 is Y+1, write('24\n'), !.
 
 %dos numeros ultima fila solo deberian haber a la derecha
 /*editarTablero(9, Y, 3, K, R, Y1) :- random(4, 28, NumR),
@@ -370,7 +370,7 @@ editarTablero(X, Y, 3, K, R, Y1) :- X>7, random(4, 28, NumR),
                                     E = x/NumR,
                                     modEl(X, Y, E, R1, K),
                                     Y2 is Y+1,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('25\n'), !.
 
 %cualquier linea, numero abajo
 editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
@@ -379,7 +379,7 @@ editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
                                     modEl(X, Y, E, R1, K),
                                     X1 is X+1,
                                     editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, !.
+                                    Y1 is Y+1, write('26\n'), !.
 
 %cualquier linea, numero derecha
 editarTablero(X, Y, 2, K, R, Y1) :- random(4, 28, NumR),
@@ -387,7 +387,7 @@ editarTablero(X, Y, 2, K, R, Y1) :- random(4, 28, NumR),
                                     E = x/NumR,
                                     modEl(X, Y, E, R1, K),
                                     Y2 is Y+1,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('27\n'), !.
 
 %cualquier linea, numero abajo y derecha
 editarTablero(X, Y, 3, K, R, Y1) :- random(4, 28, NumR1),
@@ -399,13 +399,13 @@ editarTablero(X, Y, 3, K, R, Y1) :- random(4, 28, NumR1),
                                     Y2 is Y+1,
                                     X1 is X+1,
                                     editarColumnas(X1, Y, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), !.
+                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('28\n'), !.
                                     
 
 
 
 %cualquier linea, no numero
-editarTablero(X, Y, _, K, R, Y1) :- modEl(X, Y, x, R, K), Y1 is Y+1.
+editarTablero(X, Y, _, K, R, Y1) :- modEl(X, Y, x, R, K), Y1 is Y+1, write('29\n').
 
 %primera linea
 generaLinea(1, 10, R, K) :- R = K, !.
@@ -431,4 +431,4 @@ generarKakuro :- kakuroInicial(K),
                  generaLinea(7, 1, R6, R5),
                  generaLinea(8, 1, R7, R6),
                  generaLinea(9, 1, R8, R7),
-                 escribeLineas(R8), write(R8), !.
+                 escribeLineas(R8).
