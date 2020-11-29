@@ -25,30 +25,10 @@ column(Sudoku, N, Column) :-
     N9 is 8*9+N, nth1(N9, Sudoku, X9),
     Column = [X1, X2, X3, X4, X5, X6, X7, X8, X9].
 
-sodoku( [4,x,x,x,6,x,9,1,x,
-         2,x,x,x,x,7,x,5,x,
-         x,9,x,8,x,x,x,2,x,
-         x,x,1,6,x,9,x,x,2,
-         x,8,x,x,x,x,x,6,3,
-         x,7,x,x,4,x,x,x,x,
-         7,x,3,x,x,8,x,9,x,
-         x,x,x,x,3,x,4,x,5,
-         x,4,x,9,x,x,6,x,x]).
-
-kakuro([x    , 17/x  , 16/x  , x     , x     , 12/x , 6/x  , x    , x    ,
-        x/16 , 9     , 7     , 23/x  , x/4   , 3    , 1    , 26/x , 23/x ,
-        x/23 , 8     , 9     , 6     , 29/29 , 9    , 5    , 7    , 8    ,
-        x    , x     , 18/17 , 9     , 8     , 23/x , x/17 , 8    , 9    ,
-        x    , 27/27 , 3     , 8     , 7     , 9    , 23/8 , 2    , 6    ,
-        x/9  , 7     , 2     , x/24  , 1     , 6    , 8    , 9    , x    ,
-        x/4  , 3     , 1     , 8/21  , 4     , 8    , 9    , 17/x , 16/x ,
-        x/22 , 8     , 4     , 1     , 9     , x/23 , 6    , 8    , 9    ,
-        x/24 , 9     , 8     , 7     , x     , x    , x/16 , 9    , 7     ]).
-
 imprimeLinea([H|[]]) :- write(H), nl, !.
 imprimeLinea([H|T]) :- write(H), write('\t '), imprimeLinea(T).
 
-escribeLineas(Kak) :- 
+imprimirKakuro(Kak) :- 
             row(Kak, 1, L1), imprimeLinea(L1),
             row(Kak, 2, L2), imprimeLinea(L2),
             row(Kak, 3, L3), imprimeLinea(L3),
@@ -59,23 +39,9 @@ escribeLineas(Kak) :-
             row(Kak, 8, L8), imprimeLinea(L8),
             row(Kak, 9, L9), imprimeLinea(L9).
 
-imprimirKakuro :- kakuro(X), 
-                  escribeLineas(X).
-
-kakuroInicial([x,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n,
-               n,n,n,n,n,n,n,n,n]).
-
 colaLista([_|T], I, N, R) :- I == N, R = T, !.
 colaLista([_|T], I, N, R) :- I2 is I+1, colaLista(T, I2, N, R).
 
-%modificarElemento(K, X, Y, R, I, 10, S) :- I1 is I+1, modificarElemento(K, X, Y, R, I1, 1, S), !.
 modificarElemento(_, _, _, R, 10, _, _) :- R = [], !.
 modificarElemento(K, X, Y, R, I, J, S) :- X == I, J == Y, I1 is I+1,
                                           modificarElemento(K, X, Y, R1, I1, 1, S),
@@ -95,340 +61,154 @@ modificarElemento(K, X, Y, R, I, J, S) :- I1 is I+1, row(K, I, L),
 
 modEl(X, Y, S, R, K) :- modificarElemento(K, X, Y, R, 1, 1, S).
 
-editarColumnas(X, _, _, _, K, R) :- X > 9, R = K, !.
-editarColumnas(X, Y, I, C, K, R) :- I == C, modEl(X, Y, 0, R, K).
-editarColumnas(X, Y, I, C, K, R) :- X1 is X+1, I1 is I+1,
-                                    editarColumnas(X1, Y, I1, C, K, R1),
-                                    modEl(X, Y, 0, R, R1).
+split_at(N,Xs,Take,Rest) :-
+    split_at_(Xs,N,Take,Rest).
 
-editarFilas(_, Y, _, _, K, R, _) :- Y > 9, R = K, !.
-editarFilas(X, Y, I, C, K, R, Y2) :- I == C, modEl(X, Y, 0, R, K), Y2 is Y+1.
-editarFilas(X, Y, I, C, K, R, Y2) :- Y1 is Y+1, I1 is I+1,
-                                     editarFilas(X, Y1, I1, C, K, R1, Y2),
-                                     modEl(X, Y, 0, R, R1).
-
-%generarLineas(K, 1) :- row(K, 1, L).
-generarCasillas(Num, X) :- Num < 10, X is 2, !.
-generarCasillas(Num, X) :- Num > 23, random(4, 6, X), !.
-generarCasillas(Num, X) :- Num > 17, random(3, 5, X), !.
-generarCasillas(_, X) :- random(2, 4, X).
-
-%primera linea con numero
-editarTablero(1, Y, 1, K, R) :- random(4, 28, NumR),
-                                generarCasillas(NumR, NumC),
-                                E = NumR/x,
-                                modEl(1, Y, E, R1, K),
-                                editarColumnas(2, Y, 1, NumC, R1, R), write('1\n').
-%primera linea sin numero
-editarTablero(1, Y, _, K, R) :- modEl(1, Y, x, R, K).
-
-%si la casilla tiene un 0 no se pondria nada
-editarTablero(X, Y, _, K, R, Y1) :- row(K, X, L1),
-                                   nth1(Y, L1, E),
-                                   E == 0, Y1 is Y+1, R = K, write('2\n'), !.
-
-%si se esta en la primera columna no deberia haber numeros abajo
-editarTablero(X, 1, 1, K, R, Y1) :- modEl(X, 1, x, R, K),
-                                    Y1 is 2, write('3\n'), !.
-editarTablero(X, 1, 3, K, R, Y1) :- random(4, 28, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(X, 1, E, R1, K),
-                                    Y2 is 2,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('4\n'), !.
-
-%cuando se esta en los ultimos 4 campos se insertaria una x
-editarTablero(X, Y, 3, K, R, Y1) :- Y>7, X>7, modEl(X, Y, x, R, K),
-                                    Y1 is Y+1, write('5\n'), !.
-
-%----------------------------------------------------------
-%cuando se esta en la columna 6 y numero derecha, este deberia ser pequeno
-editarTablero(X, 6, 2, K, R, Y1) :- random(4, 20, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(X, 6, E, R1, K),
-                                    Y2 is 7,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('6\n'), !.
-
-%columna 6 y fila  mayor a 7 numeros pequenos derecha
-editarTablero(X, 6, 3, K, R, Y1) :- X>7, random(4, 20, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(X, 6, E, R1, K),
-                                    Y2 is 7,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('7\n'), !.
-%random(4, 20, NumR)
-%columna 6, fila 6
-editarTablero(X, 6, 3, K, R, Y1) :- X==6, random(4, 20, NumR1),
-                                    random(4, 20, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(X, 6, E, R1, K),
-                                    X1 is X+1,
-                                    Y2 is 7,
-                                    editarColumnas(X1, 6, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('8\n'), !.
-%columna 6, fila 7
-editarTablero(X, 6, 3, K, R, Y1) :- X==7, random(4, 14, NumR1),
-                                    random(4, 20, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(X, 6, E, R1, K),
-                                    X1 is X+1,
-                                    Y2 is 7,
-                                    editarColumnas(X1, 6, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('9\n'), !.
-
-%cuando se esta en la fila 6 y numero abajo, este deberia ser pequeno
-editarTablero(X, 6, 3, K, R, Y1) :- random(4, 28, NumR1),
-                                    random(4, 20, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(X, 6, E, R1, K),
-                                    X1 is X+1,
-                                    Y2 is 7,
-                                    editarColumnas(X1, 6, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('10\n'), !.
+split_at_(Rest, 0, [], Rest) :- !. % optimization
+split_at_([], N, [], []) :-
+    % cannot optimize here because (+, -, -, -) would be wrong,
+    % which could possibly be a useful generator.
+    N > 0.
+split_at_([X|Xs], N, [X|Take], Rest) :-
+    N > 0,
+    succ(N0, N),
+    split_at_(Xs, N0, Take, Rest).
 
 
 
 
+kakuroInicial(1, Y) :- Y = [x, x, x, a, a, x, x, a, a,
+                            x, a, c, 0, 0, x, c, 0, 0,
+                            b, 0, 0, 0, 0, c, 0, 0, 0,
+                            b, 0, 0, b, 0, 0, 0, 0, x,
+                            x, x, x, b, 0, 0, x, x, x,
+                            x, x, a, c, 0, 0, x, a, a,
+                            x, c, 0, 0, 0, 0, c, 0, 0,
+                            b, 0, 0, 0, b, 0, 0, 0, 0,
+                            b, 0, 0, x, b, 0, 0, x, x].
+
+kakuroInicial(2, Y) :- Y = [x, x, x, x, x, a, a, x, x,
+                            x, a, a, x, b, 0, 0, a, a,
+                            b, 0, 0, a, b, 0, 0, 0, 0,
+                            b, 0, 0, 0, a, a, c, 0, 0,
+                            x, b, 0, 0, 0, 0, 0, 0, x,
+                            x, c, 0, 0, 0, 0, 0, 0, a,
+                            b, 0, 0, a, a, b, 0, 0, 0,
+                            b, 0, 0, 0, 0, x, b, 0, 0,
+                            x, x, b, 0, 0, x, x, x, x].
+
+kakuroInicial(3, Y) :- Y = [x, a, a, x, a, a, x, x, x,
+                            b, 0, 0, c, 0, 0, a, x, x,
+                            b, 0, 0, 0, 0, 0, 0, x, x,
+                            x, c, 0, 0, c, 0, 0, a, a,
+                            b, 0, 0, b, 0, 0, b, 0, 0,
+                            b, 0, 0, c, 0, 0, c, 0, 0,
+                            x, x, b, 0, 0, c, 0, 0, a,
+                            x, x, b, 0, 0, 0, 0, 0, 0,
+                            x, x, x, b, 0, 0, b, 0, 0].
+
+
+/*Cuenta la cantidad de ceros seguidos en una lista*/
+contarAux([0|T], CantB) :- contarAux(T, R1), CantB is R1+1, !.
+contarAux(_, CantB) :- CantB is 0.
+
+numerosRandom(C, L) :- random_permutation([1,2,3,4,5,6,7,8,9], L1), split_at(C, L1, L, _).
+numerosRandom(C, L) :- numerosRandom(C, L).
+
+
+/*Crea una lista con los numeros para saber si tienen numeros repetidos o no, esto lo verifica solo en las columnas*/
+creaLista([0|T], L, _, C, Y) :- C1 is C+1, creaLista(T, L, 0, C1, Y), !.
+creaLista([H|T], L, _, C, Y) :- member(H, [1,2,3,4,5,6,7,8,9]), C1 is C+1, creaLista(T, L1, 1, C1, Y), append([H], L1, L), !.
+creaLista([_|T], L, 0, C, Y) :- C1 is C+1, creaLista(T, L, 0, C1, Y), !.
+creaLista([_|_], L, _, C, Y) :- Y is C, append([], [], L), !.
+
+/*Revisa una columna en cada sub-espacio para ver si hay numeros repetidos*/
+revisaColumnasAux([], _) :- !.
+revisaColumnasAux(_, Y) :- Y > 8, !.
+revisaColumnasAux(Columna, Y) :- split_at(Y, Columna, _, L), creaLista(L, L1, 0, Y, Y1), is_set(L1), revisaColumnasAux(Columna, Y1).
+
+revisaColumnas(K) :- 
+                    column(K, 2, C2A), append(C2A, [x], C2B), revisaColumnasAux(C2B, 1),
+                    column(K, 3, C3A), append(C3A, [x], C3B), revisaColumnasAux(C3B, 1),
+                    column(K, 4, C4A), append(C4A, [x], C4B), revisaColumnasAux(C4B, 1),
+                    column(K, 5, C5A), append(C5A, [x], C5B), revisaColumnasAux(C5B, 1),
+                    column(K, 6, C6A), append(C6A, [x], C6B), revisaColumnasAux(C6B, 1),
+                    column(K, 7, C7A), append(C7A, [x], C7B), revisaColumnasAux(C7B, 1),
+                    column(K, 8, C8A), append(C8A, [x], C8B), revisaColumnasAux(C8B, 1),
+                    column(K, 9, C9A), append(C9A, [x], C9B), revisaColumnasAux(C9B, 1), !.
+
+insertarNumeros([_|T], _, _, K, R) :- T == [], R = K, !.
+insertarNumeros([0|T], X, Y, K, R) :- contarAux([0|T], CantB), numerosRandom(CantB, L), 
+                                      insertarNumerosAux(K, L, X, Y, K1), Y1 is Y+1, 
+                                      row(K1, X, T1), 
+                                      split_at(Y, T1, _, T2), 
+                                      insertarNumeros(T2, X, Y1, K1, R), !.
+insertarNumeros([_|T], X, Y, K, R) :- T \= [], Y1 is Y+1, insertarNumeros(T, X, Y1, K, R).
+
+
+insertarNumerosAux(K, [H|T], X, Y, R) :- T == [], modEl(X, Y, H, R, K), !.
+insertarNumerosAux(K, [H|T], X, Y, R) :- modEl(X, Y, H, R1, K), Y1 is Y+1, insertarNumerosAux(R1, T, X, Y1, R), !.
+
+insNum(Linea, X, Y, K, R) :- insertarNumeros(Linea, X, Y, K, R).
+insNum(Linea, X, Y, K, R) :- insNum(Linea, X, Y, K, R).
+
+kakuroFinal(
+            [x    , x     , x     , x      , x     , 14/x  , 14/x  , x     , x    ,
+             x    , 11/x  , 30/x  , x      , x/11  , 6     , 5     , 33/x  , 13/x ,
+             x/7  , 6     , 1     , 12/x   , x/30  , 8     , 9     , 7     , 6    ,
+             x/19 , 5     , 6     , 8      , 13/x  , 11/x  , 15/11 , 4     , 7    ,
+             x    , x/29  , 4     , 3      , 9     , 6     , 5     , 2     , x    ,
+             x    , 9/26  , 3     , 1      , 4     , 5     , 7     , 6     , 9/x  ,
+             x/12 , 3     , 9     , 13/x   , 4/x   , x/12  , 3     , 5     , 4    ,
+             x/23 , 6     , 7     , 9      , 1     , x     , x/14  , 9     , 5    ,
+             x    , x     , x/7   , 4      , 3     , x     , x     , x     , x    ]).
+
+sumarNumeros([H|T], Suma) :- member(H, [1,2,3,4,5,6,7,8,9]), sumarNumeros(T, R1), Suma is R1+H, !.
+sumarNumeros(_, Suma) :- Suma is 0.
+
+
+contar(_, Columna, a, X, _, E) :- split_at(X, Columna, _, L1), 
+                                  sumarNumeros(L1, Suma), 
+                                  E = Suma/x, !.
+
+contar(Linea, _, b, _, Y, E) :- split_at(Y, Linea, _, L1), 
+                                sumarNumeros(L1, Suma), 
+                                E = x/Suma, !.
+
+contar(Linea, Columna, c, X, Y, E) :- split_at(X, Columna, _, L1), 
+                                      sumarNumeros(L1, Suma1), 
+                                      split_at(Y, Linea, _, L2), 
+                                      sumarNumeros(L2, Suma2),
+                                      E = Suma1/Suma2, !.
+contar(_, _, X, _, _, E) :- E = X.
+
+
+colocaNumeros(KR, KSR, 10, _, R1, R2) :- R1 = KR, R2 = KSR, !.
+colocaNumeros(KR, KSR, X, 10, R1, R2) :- X1 is X+1, colocaNumeros(KR, KSR, X1, 1, R1, R2), !.
+colocaNumeros(KR, KSR, X, Y, R1, R2) :- row(KR, X, Linea),
+                             column(KR, Y, Columna),
+                             nth1(Y, Linea, Elemento),
+                             contar(Linea, Columna, Elemento, X, Y, E),
+                             modEl(X, Y, E, KR1, KR),
+                             insertaNumeroKSR(KSR, E, X, Y, KSR1),
+                             Y1 is Y+1,
+                             colocaNumeros(KR1, KSR1, X, Y1, R1, R2).
+
+insertaNumeroKSR(K, E, X, Y, R) :- member(E, [1,2,3,4,5,6,7,8,9]),
+                                modEl(X, Y, 0, R, K), !.
+insertaNumeroKSR(K, E, X, Y, R) :- modEl(X, Y, E, R, K), !.
 
 
 
-%cuando se esta en la columna 7 y numero derecha, este deberia ser pequeno
-editarTablero(X, 7, 2, K, R, Y1) :- random(4, 14, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(X, 7, E, R1, K),
-                                    Y2 is 8,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('11\n'), !.
-
-%columna 7 fila mayor a 7 
-editarTablero(X, 7, 3, K, R, Y1) :- X>7, random(4, 14, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(X, 7, E, R1, K),
-                                    Y2 is 8,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('12\n'), !.
-
-%columna 7, fila 6
-editarTablero(X, 7, 3, K, R, Y1) :- X==6, random(4, 20, NumR1),
-                                    random(4, 14, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(X, 7, E, R1, K),
-                                    X1 is X+1,
-                                    Y2 is 8,
-                                    editarColumnas(X1, 7, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('13\n'), !.
-%columna 7, fila 7
-editarTablero(X, 7, 3, K, R, Y1) :- X==7, random(4, 14, NumR1),
-                                    random(4, 14, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(X, 7, E, R1, K),
-                                    X1 is X+1,
-                                    Y2 is 8,
-                                    editarColumnas(X1, 7, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('14\n'), !.
-
-
-%cuando se esta en la columna 7 y numero derecha, este deberia ser pequeno
-editarTablero(X, 7, 3, K, R, Y1) :- random(4, 28, NumR1),
-                                    random(4, 14, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(X, 7, E, R1, K),
-                                    X1 is X+1,
-                                    Y2 is 8,
-                                    editarColumnas(X1, 7, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('15\n'), !.
-
-%--------------------------------------------------------------------
-
-
-%cuando se esta en la fila 6 y numero abajo, este deberia ser pequeno
-editarTablero(6, Y, 1, K, R, Y1) :- random(4, 20, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(6, Y, E, R1, K),
-                                    X1 is 7,
-                                    editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, write('16\n'), !.
-
-%fila 7 columna mayor a 6 numeros pequenos abajo y x derecha
-editarTablero(6, Y, 3, K, R, Y1) :- Y>7, random(4, 20, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(6, Y, E, R1, K),
-                                    X1 is 7,
-                                    editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, write('17\n').
-
-%cuando se esta en la fila 6 y numero abajo, este deberia ser pequeno
-editarTablero(6, Y, 3, K, R, Y1) :- random(4, 20, NumR1),
-                                    random(4, 28, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(6, Y, E, R1, K),
-                                    X1 is 7,
-                                    Y2 is Y+1,
-                                    editarColumnas(X1, Y, 1, NumC1, R1, R2),
-                                    editarFilas(6, Y2, 1, NumC2, R2, R, Y1), write('18\n'), !.
-
-
-%cuando se esta en la fila 7 y numero abajo, este deberia ser pequeno
-editarTablero(7, Y, 1, K, R, Y1) :- random(4, 14, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(7, Y, E, R1, K),
-                                    X1 is 8,
-                                    editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, write('19\n'), !.
-
-%fila 7 columna mayor a 7 numeros pequenos abajo y x derecha
-editarTablero(7, Y, 3, K, R, Y1) :- Y>7, random(4, 14, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(7, Y, E, R1, K),
-                                    X1 is 8,
-                                    editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, write('20\n').
-
-%cuando se esta en la fila 7 y numero abajo, este deberia ser pequeno
-editarTablero(7, Y, 3, K, R, Y1) :- random(4, 14, NumR1),
-                                    random(4, 28, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(7, Y, E, R1, K),
-                                    X1 is 8,
-                                    Y2 is Y+1,
-                                    editarColumnas(X1, Y, 1, NumC1, R1, R2),
-                                    editarFilas(7, Y2, 1, NumC2, R2, R, Y1), write('21\n'), !.
-
-
-%si se esta en las ultimas 2 columnas no deberia haber numeros a la derecha
-/*editarTablero(X, 9, 2, K, R, Y1) :- modEl(X, 9, x, R, K),
-                                    Y1 is 10, !.*/
-editarTablero(X, Y, 2, K, R, Y1) :- Y>7, modEl(X, Y, x, R, K),
-                                    Y1 is Y+1, write('22\n'), !.
-
-
-
-
-
-%si se esta en las ultimas 2 filas no deberian haber numeros abajo
-/*editarTablero(9, Y, 1, K, R, Y1) :- modEl(9, Y, x, R, K),
-                                    Y1 is Y+1, !.*/
-editarTablero(X, Y, 1, K, R, Y1) :- X>7, modEl(X, Y, x, R, K),
-                                    Y1 is Y+1, write('23\n'), !.
-
-
-%dos numeros ultimas dos columnas solo deberia haber abajo
-/*editarTablero(X, 9, 3, K, R, Y1) :- random(4, 28, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(X, 9, E, R1, K),
-                                    X1 is X+1,
-                                    editarColumnas(X1, 9, 1, NumC, R1, R),
-                                    Y1 is 10, !.*/
-/*si se esta despues de la columna 7 y en la fila 8, deberia ser un numero del 4 al 9
-editarTablero(X, Y, 3, K, R, Y1) :- Y>7, X==7, random(4, 10, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(X, Y, E, R1, K),
-                                    X1 is X+1,
-                                    editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, !.*/
-
-editarTablero(X, Y, 3, K, R, Y1) :- Y>7, random(4, 28, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(X, Y, E, R1, K),
-                                    X1 is X+1,
-                                    editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, write('24\n'), !.
-
-%dos numeros ultima fila solo deberian haber a la derecha
-/*editarTablero(9, Y, 3, K, R, Y1) :- random(4, 28, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(9, Y, E, R1, K),
-                                    Y2 is Y+1,
-                                    editarFilas(9, Y2, 1, NumC, R1, R, Y1), !.*/
-editarTablero(X, Y, 3, K, R, Y1) :- X>7, random(4, 28, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(X, Y, E, R1, K),
-                                    Y2 is Y+1,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('25\n'), !.
-
-%cualquier linea, numero abajo
-editarTablero(X, Y, 1, K, R, Y1) :- random(4, 28, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = NumR/x,
-                                    modEl(X, Y, E, R1, K),
-                                    X1 is X+1,
-                                    editarColumnas(X1, Y, 1, NumC, R1, R),
-                                    Y1 is Y+1, write('26\n'), !.
-
-%cualquier linea, numero derecha
-editarTablero(X, Y, 2, K, R, Y1) :- random(4, 28, NumR),
-                                    generarCasillas(NumR, NumC),
-                                    E = x/NumR,
-                                    modEl(X, Y, E, R1, K),
-                                    Y2 is Y+1,
-                                    editarFilas(X, Y2, 1, NumC, R1, R, Y1), write('27\n'), !.
-
-%cualquier linea, numero abajo y derecha
-editarTablero(X, Y, 3, K, R, Y1) :- random(4, 28, NumR1),
-                                    random(4, 28, NumR2),
-                                    generarCasillas(NumR1, NumC1),
-                                    generarCasillas(NumR2, NumC2),
-                                    E = NumR1/NumR2,
-                                    modEl(X, Y, E, R1, K),
-                                    Y2 is Y+1,
-                                    X1 is X+1,
-                                    editarColumnas(X1, Y, 1, NumC1, R1, R2),
-                                    editarFilas(X, Y2, 1, NumC2, R2, R, Y1), write('28\n'), !.
-                                    
-
-
-
-%cualquier linea, no numero
-editarTablero(X, Y, _, K, R, Y1) :- modEl(X, Y, x, R, K), Y1 is Y+1, write('29\n').
-
-%primera linea
-generaLinea(1, 10, R, K) :- R = K, !.
-generaLinea(1, Y, R, K) :- random(1, 4, Num),
-                           Y1 is Y+1,
-                           generaLinea(1, Y1, R1, K),
-                           editarTablero(1, Y, Num, R1, R).
-%cualquier linea
-generaLinea(_, 10, R, K) :- R = K.
-generaLinea(X, Y, R, K) :- random(1, 7, Num), 
-                           editarTablero(X, Y, Num, K, R1, Y1),
-                           generaLinea(X, Y1, R, R1).
-
-
-%llamar a esta funcion para generar
-generarKakuro :- kakuroInicial(K), 
-                 generaLinea(1, 2, R, K), 
-                 generaLinea(2, 1, R1, R), 
-                 generaLinea(3, 1, R2, R1),
-                 generaLinea(4, 1, R3, R2),
-                 generaLinea(5, 1, R4, R3),
-                 generaLinea(6, 1, R5, R4),
-                 generaLinea(7, 1, R6, R5),
-                 generaLinea(8, 1, R7, R6),
-                 generaLinea(9, 1, R8, R7),
-                 escribeLineas(R8).
+generarKakuro(R1, R2) :- random(1, 4, Num), kakuroInicial(Num, K), revisaColumnas(K),
+                 row(K, 2, L2),  insNum(L2, 2, 1, K, K1),  revisaColumnas(K1),
+                 row(K1, 3, L3), insNum(L3, 3, 1, K1, K2), revisaColumnas(K2),
+                 row(K2, 4, L4), insNum(L4, 4, 1, K2, K3), revisaColumnas(K3),
+                 row(K3, 5, L5), insNum(L5, 5, 1, K3, K4), revisaColumnas(K4),
+                 row(K4, 6, L6), insNum(L6, 6, 1, K4, K5), revisaColumnas(K5),
+                 row(K5, 7, L7), insNum(L7, 7, 1, K5, K6), revisaColumnas(K6),
+                 row(K6, 8, L8), insNum(L8, 8, 1, K6, K7), revisaColumnas(K7),
+                 row(K7, 9, L9), insNum(L9, 9, 1, K7, K8), revisaColumnas(K8),
+                 colocaNumeros(K8, K, 1, 2, R1, R2),
+                 write('Kakuro sin resolver'), nl, imprimirKakuro(R2), nl,
+                 write('Kakuro resuelto'), nl, imprimirKakuro(R1), nl, !.
