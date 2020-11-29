@@ -132,6 +132,8 @@ kakuroInicial(3, Y) :- Y = [x, a, a, x, a, a, x, x, x,
                             x, x, b, 0, 0, 0, 0, 0, 0,
                             x, x, x, b, 0, 0, b, 0, 0].
 
+%revisaColumnasAux([b, 0, 0, 0, 0, 0, 0, x, x, x], 1).
+
 contarAux([0|T], CantB) :- contarAux(T, R1), CantB is R1+1, !.
 contarAux(_, CantB) :- CantB is 0.
 
@@ -176,4 +178,71 @@ rango(4, Num) :- random(10, 31, Num).
 rango(5, Num) :- random(15, 36, Num).
 rango(6, Num) :- random(21, 40, Num).
 
-prueba :- random(1, 4, X), kakuroInicial(X, K), colocaNumeros(K, 1, 1, R), escribeLineas(R).
+prueba :- kakuroInicial(1, K), colocaNumeros(K, 1, 1, R), escribeLineas(R).
+
+solucion() :- kakuroInicial(1, _).
+
+numerosRandom(C, L) :- random_permutation([1,2,3,4,5,6,7,8,9], L1), split_at(C, L1, L, _).
+numerosRandom(C, L) :- numerosRandom(C, L).
+
+traeRandom(X) :- random(1, 11, X).
+traeRandom(X) :- traeRandom(X).
+
+prof :- numerosRandom(1, X), X == [1], write(X).
+%revisaColumnasAux([b, 3, x, 8, 5, a, x, c, 5, 8, 3, 2, 4, x], 1).
+
+/*Crea una lista con los numeros para saber si tienen numeros repetidos o no, esto lo verifica solo en las columnas*/
+%creaLista(_, L, _, C, Y) :- C>10, append([], [], L), Y is C.
+creaLista([0|T], L, _, C, Y) :- C1 is C+1, creaLista(T, L, 0, C1, Y), !.
+creaLista([H|T], L, _, C, Y) :- member(H, [1,2,3,4,5,6,7,8,9]), C1 is C+1, creaLista(T, L1, 1, C1, Y), append([H], L1, L), !.
+creaLista([_|T], L, 0, C, Y) :- C1 is C+1, creaLista(T, L, 0, C1, Y), !.
+creaLista([_|_], L, _, C, Y) :- Y is C, append([], [], L), !.
+
+/*Revisa una columna en cada sub-espacio para ver si hay numeros repetidos*/
+revisaColumnasAux([], _) :- !.
+revisaColumnasAux(_, Y) :- Y > 8, !.
+revisaColumnasAux(Columna, Y) :- split_at(Y, Columna, _, L), creaLista(L, L1, 0, Y, Y1), is_set(L1), revisaColumnasAux(Columna, Y1).
+
+
+
+%creaLista([b, 3, 2, 8, 5, 1, x, c, 5, 8, 3, 2, x], L, 0).
+%revisaColumnas([b, 3, x, 8, 5, a, x, c, 5, 8, 3, 2, 4], 1).
+
+revisaColumnas(K) :- 
+                    column(K, 2, C2A), append(C2A, [x], C2B), revisaColumnasAux(C2B, 1),
+                    column(K, 3, C3A), append(C3A, [x], C3B), revisaColumnasAux(C3B, 1),
+                    column(K, 4, C4A), append(C4A, [x], C4B), revisaColumnasAux(C4B, 1),
+                    column(K, 5, C5A), append(C5A, [x], C5B), revisaColumnasAux(C5B, 1),
+                    column(K, 6, C6A), append(C6A, [x], C6B), revisaColumnasAux(C6B, 1),
+                    column(K, 7, C7A), append(C7A, [x], C7B), revisaColumnasAux(C7B, 1),
+                    column(K, 8, C8A), append(C8A, [x], C8B), revisaColumnasAux(C8B, 1),
+                    column(K, 9, C9A), append(C9A, [x], C9B), revisaColumnasAux(C9B, 1), !.
+
+prueba1 :- random(1, 4, Num), kakuroInicial(Num, K), revisaColumnas(K).
+
+generarKakuro(Kakuro) :- random(1, 4, Num), kakuroInicial(Num, K), revisaColumnas(K),
+                 row(K, 2, L2),  insNum(L2, 2, 1, K, K1),  revisaColumnas(K1),
+                 row(K1, 3, L3), insNum(L3, 3, 1, K1, K2), revisaColumnas(K2),
+                 row(K2, 4, L4), insNum(L4, 4, 1, K2, K3), revisaColumnas(K3),
+                 row(K3, 5, L5), insNum(L5, 5, 1, K3, K4), revisaColumnas(K4),
+                 row(K4, 6, L6), insNum(L6, 6, 1, K4, K5), revisaColumnas(K5),
+                 row(K5, 7, L7), insNum(L7, 7, 1, K5, K6), revisaColumnas(K6),
+                 row(K6, 8, L8), insNum(L8, 8, 1, K6, K7), revisaColumnas(K7),
+                 row(K7, 9, L9), insNum(L9, 9, 1, K7, K8), revisaColumnas(K8),
+                 nl, escribeLineas(K8), Kakuro = K8, !.
+
+insertarNumeros([_|T], _, _, K, R) :- T == [], R = K, !.
+insertarNumeros([0|T], X, Y, K, R) :- contarAux([0|T], CantB), numerosRandom(CantB, L), 
+                                      insertarNumerosAux(K, L, X, Y, K1), Y1 is Y+1, 
+                                      row(K1, X, T1), 
+                                      split_at(Y, T1, _, T2), 
+                                      insertarNumeros(T2, X, Y1, K1, R), !.
+insertarNumeros([_|T], X, Y, K, R) :- T \= [], Y1 is Y+1, insertarNumeros(T, X, Y1, K, R).
+%insertarNumeros(L, X, Y, K, R) :- insertarNumeros(L, X, Y, K, R).
+
+
+insertarNumerosAux(K, [H|T], X, Y, R) :- T == [], modEl(X, Y, H, R, K), !.
+insertarNumerosAux(K, [H|T], X, Y, R) :- modEl(X, Y, H, R1, K), Y1 is Y+1, insertarNumerosAux(R1, T, X, Y1, R), !.
+
+insNum(Linea, X, Y, K, R) :- insertarNumeros(Linea, X, Y, K, R).
+insNum(Linea, X, Y, K, R) :- insNum(Linea, X, Y, K, R).
