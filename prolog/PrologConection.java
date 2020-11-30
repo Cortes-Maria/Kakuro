@@ -9,10 +9,14 @@ public class PrologConection {
 
     String tableroKakuro[][];
     String tableroKakuroSolucion[][];
+    String[][] matrizKak;
+    String[][] matrizKakSolucion;
 
     public PrologConection() {
         this.tableroKakuro = new String[9][9];
         this.tableroKakuroSolucion = new String[9][9];
+        this.matrizKak = new String[81][2];
+        this.matrizKakSolucion = new String[81][2];
         crearConexion();
     }
 
@@ -37,12 +41,12 @@ public class PrologConection {
         Term kakuro = (Term) solucion.get("Y");
 
         int i = 0;
-        int j = 0;
+        //int j = 0;
         while(kakuroSolucion.arity() == 2) {
-            if (j == 9) {
-                i++;
-                j = 0;
+            if (i == 81) {
+                break;
             }
+
             String elemento1 = kakuroSolucion.arg(1).toString();
             String elemento2 = kakuro.arg(1).toString();
 
@@ -51,16 +55,21 @@ public class PrologConection {
                 StringTokenizer tokens = new StringTokenizer(elemento1, ",");
                 String str1 = tokens.nextToken();
                 String str2 = tokens.nextToken().substring(1);
-                elemento1 = str1 + "/" + str2;
-                elemento2 = elemento1;
+
+                this.matrizKakSolucion[i][0] = str1;
+                this.matrizKakSolucion[i][1] = str2;
+
+                this.matrizKak[i][0] = str1;
+                this.matrizKak[i][1] = str2;
+            }else{
+                this.matrizKakSolucion[i][0] = elemento1;
+                this.matrizKak[i][0] = elemento2;
             }
 
-            this.tableroKakuroSolucion[i][j] = elemento1;
-            this.tableroKakuro[i][j] = elemento2;
             kakuroSolucion = kakuroSolucion.arg(2);
             kakuro = kakuro.arg(2);
 
-            j++;
+            i++;
         }
     }
 
@@ -71,11 +80,15 @@ public class PrologConection {
         S: una lista con todos los elementos de la matriz
         */
         String listaKakuro[] = new String[81];
-        for (int i=0; i<9; i++){
-            for (int j=0; j<9; j++){
-                listaKakuro[i*9+j] = kakuro[i][j];
+        for (int i=0; i<81; i++){
+            if(kakuro[i][1] != null) {
+                listaKakuro[i] = kakuro[i][0] + "/" + kakuro[i][1];
+            }
+            else {
+                listaKakuro[i] = kakuro[i][0];
             }
         }
+
         return listaKakuro;
     }
 
@@ -85,6 +98,7 @@ public class PrologConection {
         E: una lista
         S: un string que seria la lista
         */
+
         return Arrays.asList(kakuro).toString();
     }
 
@@ -130,5 +144,13 @@ public class PrologConection {
 
     public String[][] getTableroKakuroSolucion() {
         return tableroKakuroSolucion;
+    }
+
+    public String[][] getMatrizKak() {
+        return matrizKak;
+    }
+
+    public String[][] getMatrizKakSolucion() {
+        return matrizKakSolucion;
     }
 }
