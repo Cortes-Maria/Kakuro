@@ -77,8 +77,6 @@ public class KakuroTable extends JFrame {
         validaciones.add(errores);
         validaciones.add(pendientes);
         validaciones.add(ganador);
-
-
     }
     public void tableGenerator(String[][] pTable) {
         table.setLayout(new GridLayout(9, 9)); // This makes the frame into a 9 x 9 grid
@@ -95,7 +93,6 @@ public class KakuroTable extends JFrame {
             }
         }
     }
-
     public void updateTable(String[][] pTable) {
         for (int i = 0; i < 81; i++) {
             if(pTable[i][1] != null || pTable[i][0].equals("x")) {
@@ -103,6 +100,12 @@ public class KakuroTable extends JFrame {
             }else {
                 buttonsList.get(getButtonIndex(i)).setText(pTable[i][0]);
             }
+        }
+    }
+    public void reiniciarTable() {
+        for (int i = 0; i < buttonsList.size(); i++) {
+            buttonsList.get(i).setText("");
+            this.currentGame[buttonsList.get(i).position][0] = "0";
         }
     }
     public int getButtonIndex(int iPosition){
@@ -123,6 +126,7 @@ public class KakuroTable extends JFrame {
         gamePanel.add(validaciones);
 
         this.add(gamePanel);
+        //this.add(validaciones);
         this.setSize(800,500);
 
         buttonsGenerator();

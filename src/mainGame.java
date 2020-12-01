@@ -58,7 +58,10 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //your actions aqui
+                String[] listaKakuro = prolog.matrizAlista(table.currentGame);
+                String[] listaKakuroS = prolog.matrizAlista(tableroKakuroS);
+                Integer[] validacion = prolog.verificarTablero(prolog.listaAstring(listaKakuro), prolog.listaAstring(listaKakuroS));
+                table.validacionesGenerator(validacion);
             }
         });
     }
@@ -69,7 +72,7 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                table.updateTable(tableroKakuro);
+                table.reiniciarTable();
             }
         });
     }
@@ -85,6 +88,7 @@ public class mainGame {
         });
     }
     /*
+     /*
      aqui va la accion de solicitar sugerencia del kakuro
      */
     public void sugerenciaKakuro(JButton pButton) {
@@ -96,6 +100,7 @@ public class mainGame {
                     if (table.buttonsList.get(i).position == sugerencia[0]) {
                         if(table.sugerenciasDisponibles > 0){
                             table.buttonsList.get(i).setText(Integer.toString(sugerencia[1]));//setea el boton con el numero sugerido
+                            table.currentGame[table.buttonsList.get(i).position][0] = Integer.toString(sugerencia[1]);
                             table.sugerencias.setText("Sugerencias (" + Integer.toString(table.sugerenciasDisponibles - 1) + ")");//resta una sugerencia disponible
                             table.sugerenciasDisponibles--;
                         }
