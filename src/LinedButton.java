@@ -7,9 +7,27 @@ import javax.swing.border.Border;
 public class LinedButton extends JLabel {
 
     private static final long serialVersionUID = 1L;
+    String[] numbers;
+    String numeroDerecha;
+    String numeroIzquierda;
 
-    public LinedButton(int[] numbers) {
-        this.setText(" "+ Integer.toString(numbers[0])+"     "+Integer.toString(numbers[1]));
+    public LinedButton(String[] pNumbers) {
+        numbers = pNumbers;
+        if(pNumbers.length == 2) {
+            if (numbers[0].compareTo("x") == 0){
+                numeroIzquierda = " ";
+            }else {
+                numeroIzquierda = pNumbers[0];
+            }
+            if(numbers[1].compareTo("x") == 0){
+                numeroDerecha = " ";
+            }   else   {
+                numeroDerecha = pNumbers[1];
+            }
+
+            this.setText("   "+ numeroIzquierda+"          "+numeroDerecha);
+        }
+
 
         Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 
@@ -29,9 +47,9 @@ public class LinedButton extends JLabel {
         int y2 = this.getHeight();
 
         // and then draw it
-        g.drawLine(x1, y1, x2, y2);
-
-
+        if(numbers.length == 2){
+            g.drawLine(x1, y1, x2, y2);
+        }
     }
 
     @Override
