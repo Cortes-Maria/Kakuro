@@ -13,6 +13,9 @@ public class mainGame {
     String tableroKakuro[][];
     String tableroKakuroS[][];
     KakuroTable table;
+    int verificacionesSolicitadas = 0;
+    int cantidadErrores = 0;
+    String finalizacion = "Abandono";
 
     public Integer[] solicitarSugerencia(String[] kakuro, String[] kakuroResuelto){
         Random r = new Random();
@@ -46,6 +49,13 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("Estadisticas kakuro");
+                System.out.println("Cantidad de celdas de ingreso de dígitos: " + table.buttonsList.size());
+                System.out.println("Cantidad de verificaciones realizadas: " + verificacionesSolicitadas);
+                System.out.println("Cantidad de errores de verificación: " + cantidadErrores);
+                System.out.println("Cantidad de sugerencias utilizadas: "+ (5 - table.sugerenciasDisponibles));
+                System.out.println("Tipo Finalización: " + finalizacion);
+                System.out.println();
                  table.generarTable();
             }
         });
@@ -58,9 +68,14 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                verificacionesSolicitadas++;
                 String[] listaKakuro = prolog.matrizAlista(table.currentGame);
                 String[] listaKakuroS = prolog.matrizAlista(tableroKakuroS);
                 Integer[] validacion = prolog.verificarTablero(prolog.listaAstring(listaKakuro), prolog.listaAstring(listaKakuroS));
+                cantidadErrores += validacion[0];
+                if(validacion[0] == 0 && validacion[1] == 0){
+                    finalizacion = "Exitosa";
+                }
                 table.validacionesGenerator(validacion);
             }
         });
@@ -84,6 +99,7 @@ public class mainGame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 table.updateTable(tableroKakuroS);
+                finalizacion = "Autosolucion";
             }
         });
     }
