@@ -5,6 +5,7 @@ import javax.swing.*; // JFrame, JPanel, ...
 import java.awt.*; // GridLayout
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,7 +17,7 @@ public class KakuroTable extends JFrame {
     public String[][] solutionGame;
     public JPanel gamePanel = new JPanel();
     public JPanel buttons = new JPanel();
-    public List<editableButton> buttonsList;
+    public List<editableButton> buttonsList = new ArrayList<editableButton>();
     public JPanel table = new JPanel();
     public JButton generar = new JButton("Generar");
     public JButton validar = new JButton("Validar");
@@ -66,6 +67,12 @@ public class KakuroTable extends JFrame {
                 buttonsList.add(button);
             }
         }
+    }
+
+    public void updateTable(String[][] pTable) {
+        table.setVisible(false);
+        table.setVisible(true);
+        tableGenerator(pTable);
     }
 
     public KakuroTable(String[][] pTable, String[][] pSolution) {

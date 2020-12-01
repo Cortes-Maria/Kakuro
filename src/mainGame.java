@@ -46,8 +46,7 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //your actions aqui
-
+                 //d
             }
         });
     }
@@ -81,13 +80,14 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //your actions aqui
+                String[][] xd = prolog.getMatrizKakSolucion();
+                table.updateTable(xd);
             }
         });
     }
     /*
-    aqui va la accion de solicitar sugerencia del kakuro
-    */
+     aqui va la accion de solicitar sugerencia del kakuro
+     */
     public void sugerenciaKakuro(JButton pButton) {
         pButton.addActionListener(new ActionListener() {
             @Override
@@ -95,8 +95,12 @@ public class mainGame {
                 Integer[] sugerencia = solicitarSugerencia(prolog.matrizAlista(table.currentGame), prolog.matrizAlista(tableroKakuroS));
                 for (int i = 0; i < table.buttonsList.size(); i++) {
                     if (table.buttonsList.get(i).position == sugerencia[0]) {
-                        table.buttonsList.get(i).setText(Integer.toString(sugerencia[1]));//setea el boton con el numero sugerido
-                        table.sugerencias.setText("Sugerencias (" + Integer.toString(table.sugerenciasDisponibles - 1) + ")");//resta una sugerencia disponible
+                        if(table.sugerenciasDisponibles > 0){
+                            table.buttonsList.get(i).setText(Integer.toString(sugerencia[1]));//setea el boton con el numero sugerido
+                            table.sugerencias.setText("Sugerencias (" + Integer.toString(table.sugerenciasDisponibles - 1) + ")");//resta una sugerencia disponible
+                            table.sugerenciasDisponibles--;
+                        }
+
                     }
                 }
             }
@@ -105,7 +109,7 @@ public class mainGame {
 
 
 
-    public void mainGame() {
+    public mainGame() {
         prolog = new PrologConection();
         prolog.generarKakuro();
         tableroKakuro = prolog.getMatrizKak();
