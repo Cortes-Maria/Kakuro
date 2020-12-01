@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 public class KakuroTable extends JFrame {
     private JPanel MainPanel; // This is the window class
+
     private JPanel gamePanel = new JPanel();
     private JPanel buttons = new JPanel();
     private JPanel table = new JPanel();
@@ -48,7 +49,7 @@ public class KakuroTable extends JFrame {
                 LinedButton button = new LinedButton(pTable[i]);
                 table.add(button);
             }else {
-                JButton button = new JButton();
+                editableButton button = new editableButton("",i);
                 changeNumber(button);
                 table.add(button);
             }
