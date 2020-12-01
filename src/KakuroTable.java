@@ -105,7 +105,7 @@ public class KakuroTable extends JFrame {
             }
         }
     }
-    public void generarTable(String[][] pTable) {
+    public void generarTable(String[][] pTable,String[][] solution) {
         for (int i = 0; i < 81; i++) {
             if(pTable[i][1] != null || pTable[i][0].equals("x")) {
                 String[] numbers = pTable[i];
@@ -130,6 +130,8 @@ public class KakuroTable extends JFrame {
                 buttonsList.get(getButtonIndex(i)).setText(pTable[i][0]);
             }
         }
+        reiniciarTable();
+        solutionGame = solution;
     }
     public void reiniciarTable() {
         for (int i = 0; i < buttonsList.size(); i++) {
