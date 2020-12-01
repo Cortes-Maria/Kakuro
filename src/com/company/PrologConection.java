@@ -44,6 +44,9 @@ public class PrologConection {
         Term kakuroSolucion = (Term) solucion.get("X");
         Term kakuro = (Term) solucion.get("Y");
 
+        this.matrizKakSolucion = new String[81][2];
+        this.matrizKakSolucion = new String[81][2];
+
         int i = 0;
         //int j = 0;
         while(kakuroSolucion.arity() == 2) {

@@ -46,7 +46,7 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 //d
+                 table.generarTable();
             }
         });
     }

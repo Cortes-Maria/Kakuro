@@ -105,33 +105,10 @@ public class KakuroTable extends JFrame {
             }
         }
     }
-    public void generarTable(String[][] pTable,String[][] solution) {
-        for (int i = 0; i < 81; i++) {
-            if(pTable[i][1] != null || pTable[i][0].equals("x")) {
-                String[] numbers = pTable[i];
-                String numeroDerecha;
-                String numeroIzquierda;
-                if(numbers[1] != null) {
-                    if (numbers[0].compareTo("x") == 0){
-                        numeroIzquierda = " ";
-                    }else {
-                        numeroIzquierda = numbers[0];
-                    }
-                    if(numbers[1].compareTo("x") == 0){
-                        numeroDerecha = " ";
-                    }   else   {
-                        numeroDerecha = numbers[1];
-                    }
-                    linedButtonsList.get(getLinedButtonIndex(i)).setText("   "+ numeroIzquierda+"          "+numeroDerecha);
-                }else {
-                    linedButtonsList.get(getLinedButtonIndex(i)).setText("");
-                }
-            }else {
-                buttonsList.get(getButtonIndex(i)).setText(pTable[i][0]);
-            }
-        }
-        reiniciarTable();
-        solutionGame = solution;
+    public void generarTable() {
+        setVisible(false); //you can't see me!
+        mainGame juegonuevo = new mainGame();
+        dispose(); //Destroy the JFrame object
     }
     public void reiniciarTable() {
         for (int i = 0; i < buttonsList.size(); i++) {
