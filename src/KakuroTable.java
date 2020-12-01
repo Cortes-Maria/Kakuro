@@ -120,6 +120,7 @@ public class KakuroTable extends JFrame {
         gamePanel.add(validaciones);
 
         this.add(gamePanel);
+        this.add(validaciones);
         this.setSize(800,500);
 
         buttonsGenerator();
