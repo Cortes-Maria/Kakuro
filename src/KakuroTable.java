@@ -16,7 +16,7 @@ public class KakuroTable extends JFrame {
     public String[][] solutionGame;
     public JPanel gamePanel = new JPanel();
     public JPanel buttons = new JPanel();
-    public List<LinedButton> buttonsList;
+    public List<editableButton> buttonsList;
     public JPanel table = new JPanel();
     public JButton generar = new JButton("Generar");
     public JButton validar = new JButton("Validar");
@@ -59,11 +59,11 @@ public class KakuroTable extends JFrame {
             if(pTable[i][1] != null || pTable[i][0].equals("x")) {
                 LinedButton button = new LinedButton(pTable[i]);
                 table.add(button);
-                buttonsList.add(button);
             }else {
                 editableButton button = new editableButton("",i);
                 changeNumber(button);
                 table.add(button);
+                buttonsList.add(button);
             }
         }
     }

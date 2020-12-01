@@ -1,3 +1,4 @@
+package prolog;
 
 public class Main {
 

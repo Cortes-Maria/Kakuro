@@ -1,11 +1,17 @@
-import src.KakuroTable.KakuroTable;
+
 //no se si esta bien ese import
+
+import com.company.PrologConection;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class mainGame {
     PrologConection prolog;
-    prolog.generarKakuro();
-    String tableroKakuro[][] = prolog.getMatrizKak();
-    String tableroKakuroS[][] = prolog.getMatrizKakSolucion();
+    String tableroKakuro[][];
+    String tableroKakuroS[][];
     KakuroTable table;
 
     public Integer[] solicitarSugerencia(String[] kakuro, String[] kakuroResuelto){
@@ -82,15 +88,16 @@ public class mainGame {
     /*
     aqui va la accion de solicitar sugerencia del kakuro
     */
-    public void sugerenciaKakuro(JButton pButton, String[][] kakuroResuelto) {
+    public void sugerenciaKakuro(JButton pButton) {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            Integer[] sugerencia = solicitarSugerencia(prolog.matrizAlista(table.tableroKakuro),prolog.matrizAlista(tableroKakuroS));
-            for(int i=0; i<table.buttonsList.length; i++){
-                if(table.buttonList[i].position == sugerencia[0]){
-                    table.buttonList[i].setText(Integer.toString(sugerencia[1]));//setea el boton con el numero sugerido
-                    table.sugerencias.setText("Sugerencias (" + Integer.toString(table.sugerenciasDisponibles-1)+")");//resta una sugerencia disponible
+                Integer[] sugerencia = solicitarSugerencia(prolog.matrizAlista(table.currentGame), prolog.matrizAlista(tableroKakuroS));
+                for (int i = 0; i < table.buttonsList.size(); i++) {
+                    if (table.buttonsList.get(i).position == sugerencia[0]) {
+                        table.buttonsList.get(i).setText(Integer.toString(sugerencia[1]));//setea el boton con el numero sugerido
+                        table.sugerencias.setText("Sugerencias (" + Integer.toString(table.sugerenciasDisponibles - 1) + ")");//resta una sugerencia disponible
+                    }
                 }
             }
         });
@@ -101,11 +108,11 @@ public class mainGame {
     public void mainGame() {
         prolog = new PrologConection();
         prolog.generarKakuro();
-        String tableroKakuro[][] = prolog.getMatrizKak();
-        String tableroKakuroS[][] = prolog.getMatrizKakSolucion();
+        tableroKakuro = prolog.getMatrizKak();
+        tableroKakuroS = prolog.getMatrizKakSolucion();
 
         JFrame frame = new KakuroTable(tableroKakuro,tableroKakuroS);
-        table = frame;
+        table = (KakuroTable) frame;
         generarKakuro(table.generar);
         validarKakuro(table.validar);
         reiniciarKakuro(table.reiniciar);
@@ -119,5 +126,9 @@ public class mainGame {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 6
         frame.setVisible(true);
 
+    }
+    /*Test*/
+    public static void main(String[] args) {
+       mainGame juego = new mainGame();
     }
 }
