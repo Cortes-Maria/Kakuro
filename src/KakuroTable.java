@@ -17,6 +17,12 @@ public class KakuroTable extends JFrame {
     public String[][] solutionGame;
     public JPanel gamePanel = new JPanel();
     public JPanel buttons = new JPanel();
+
+    public JPanel validaciones = new JPanel();
+    public JLabel errores = new JLabel();
+    public JLabel pendientes = new JLabel();
+    public JLabel ganador = new JLabel();
+
     public List<editableButton> buttonsList = new ArrayList<editableButton>();
     public JPanel table = new JPanel();
     public JButton generar = new JButton("Generar");
@@ -52,6 +58,24 @@ public class KakuroTable extends JFrame {
         buttons.add(reiniciar);
         buttons.add(mostrarSolucion);
         buttons.add(sugerencias);
+    }
+    public void validacionesGenerator(int[] validations) {
+        validaciones.setSize(200,500);
+
+        errores.setText("Cantidad de errores: "+Integer.toString(validations[0]));
+        pendientes.setText("Cantidad de pendientes: " + Integer.toString(validations[1]));
+
+        if(validations[0] == 0 && validations[1] == 0){
+            ganador.setText("Felicidades, ha ganado!");
+        }else {
+            ganador.setText("Aun no ha ganado");
+        }
+
+        validaciones.add(errores);
+        validaciones.add(pendientes);
+        validaciones.add(ganador);
+
+
     }
     public void tableGenerator(String[][] pTable) {
         table.setLayout(new GridLayout(9, 9)); // This makes the frame into a 9 x 9 grid
@@ -93,6 +117,7 @@ public class KakuroTable extends JFrame {
         solutionGame = pSolution;
         gamePanel.add(buttons);
         gamePanel.add(table);
+        gamePanel.add(validaciones);
 
         this.add(gamePanel);
         this.setSize(800,500);
