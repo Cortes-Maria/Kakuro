@@ -13,7 +13,7 @@ public class LinedButton extends JLabel {
 
     public LinedButton(String[] pNumbers) {
         numbers = pNumbers;
-        if(pNumbers.length == 2) {
+        if(pNumbers[1] != null) {
             if (numbers[0].compareTo("x") == 0){
                 numeroIzquierda = " ";
             }else {

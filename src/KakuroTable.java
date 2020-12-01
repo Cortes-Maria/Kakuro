@@ -1,4 +1,5 @@
-import sun.applet.Main;
+
+import com.company.PrologConection;
 
 import javax.swing.*; // JFrame, JPanel, ...
 import java.awt.*; // GridLayout
@@ -43,7 +44,7 @@ public class KakuroTable extends JFrame {
         table.setLayout(new GridLayout(9, 9)); // This makes the frame into a 9 x 9 grid
         table.setSize(500,500);
         for (int i = 0; i < 81; i++) {
-            if(pTable[i].length == 2 || pTable[i][0].compareTo("x") == 0) {
+            if(pTable[i][1] != null || pTable[i][0].equals("x")) {
                 LinedButton button = new LinedButton(pTable[i]);
                 table.add(button);
             }else {
@@ -66,8 +67,11 @@ public class KakuroTable extends JFrame {
 
     }
     public static void main (String[] args) {
-        String[][] ejemplo = {{"0"},{"0"},{"x","1"},{"0"},{"0"},{"0"},{"3","6"},{"0"},{"0"},{"0"},{"44","3"},{"0"},{"0"},{"0"},{"0"},{"x"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"}};
-        JFrame frame = new KakuroTable(ejemplo);
+        //String[][] ejemplo = {{"0"},{"0"},{"x","1"},{"0"},{"0"},{"0"},{"3","6"},{"0"},{"0"},{"0"},{"44","3"},{"0"},{"0"},{"0"},{"0"},{"x"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"}};
+        com.company.PrologConection prolog = new PrologConection();
+        prolog.generarKakuro();
+        String[][] kakuro = prolog.getMatrizKak();
+        JFrame frame = new KakuroTable(kakuro);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 3
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 6
         frame.setVisible(true);
