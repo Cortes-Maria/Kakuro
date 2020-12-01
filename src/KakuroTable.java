@@ -59,7 +59,7 @@ public class KakuroTable extends JFrame {
         buttons.add(mostrarSolucion);
         buttons.add(sugerencias);
     }
-    public void validacionesGenerator(int[] validations) {
+    public void validacionesGenerator(Integer[] validations) {
         validaciones.setSize(200,500);
 
         errores.setText("Cantidad de errores: "+Integer.toString(validations[0]));
