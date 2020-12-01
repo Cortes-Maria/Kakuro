@@ -10,9 +10,11 @@ public class LinedButton extends JLabel {
     String[] numbers;
     String numeroDerecha;
     String numeroIzquierda;
+    public int position;
 
-    public LinedButton(String[] pNumbers) {
+    public LinedButton(String[] pNumbers, int pPosition) {
         numbers = pNumbers;
+        position = pPosition;
         if(pNumbers[1] != null) {
             if (numbers[0].compareTo("x") == 0){
                 numeroIzquierda = " ";
