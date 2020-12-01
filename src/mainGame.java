@@ -69,7 +69,7 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //your actions aqui
+                table.updateTable(tableroKakuro);
             }
         });
     }
@@ -80,8 +80,7 @@ public class mainGame {
         pButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[][] xd = prolog.getMatrizKakSolucion();
-                table.updateTable(xd);
+                table.updateTable(tableroKakuroS);
             }
         });
     }

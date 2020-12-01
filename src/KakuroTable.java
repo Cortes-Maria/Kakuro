@@ -70,9 +70,21 @@ public class KakuroTable extends JFrame {
     }
 
     public void updateTable(String[][] pTable) {
-        table.setVisible(false);
-        table.setVisible(true);
-        tableGenerator(pTable);
+        for (int i = 0; i < 81; i++) {
+            if(pTable[i][1] != null || pTable[i][0].equals("x")) {
+
+            }else {
+                buttonsList.get(getButtonIndex(i)).setText(pTable[i][0]);
+            }
+        }
+    }
+    public int getButtonIndex(int iPosition){
+        for (int i = 0; i < buttonsList.size(); i++) {
+            if (buttonsList.get(i).position == iPosition) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public KakuroTable(String[][] pTable, String[][] pSolution) {
