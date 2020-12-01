@@ -38,14 +38,17 @@ public class KakuroTable extends JFrame {
                 //your actions
                 if(pButton.getText().compareTo("9") == 0){
                     pButton.setText("");
+                    currentGame[pButton.position][0] = "0";
 
                 }else {
                     if(pButton.getText().compareTo("") != 0){
                         currentGame[pButton.position][0] = Integer.toString(Integer.parseInt(pButton.getText())+1);
                         pButton.setText(Integer.toString(Integer.parseInt(pButton.getText())+1));
 
-                    }else {
+                    }
+                    else {
                         pButton.setText(Integer.toString(1));
+                        currentGame[pButton.position][0] = "1";
                     }
                 }
             }
@@ -60,7 +63,7 @@ public class KakuroTable extends JFrame {
         buttons.add(sugerencias);
     }
     public void validacionesGenerator(Integer[] validations) {
-        validaciones.setSize(200,500);
+        validaciones.setSize(800,500);
 
         errores.setText("Cantidad de errores: "+Integer.toString(validations[0]));
         pendientes.setText("Cantidad de pendientes: " + Integer.toString(validations[1]));
@@ -120,7 +123,6 @@ public class KakuroTable extends JFrame {
         gamePanel.add(validaciones);
 
         this.add(gamePanel);
-        this.add(validaciones);
         this.setSize(800,500);
 
         buttonsGenerator();
